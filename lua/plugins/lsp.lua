@@ -19,7 +19,6 @@ return {
                             capabilities = caps,
                             on_attach = function(_, bufnr)
                                 local b = { buffer = bufnr }
-                                vim.keymap.set("n", "gd", vim.lsp.buf.definition, b)
                                 vim.keymap.set("n", "K", vim.lsp.buf.hover, b)
                             end,
                         })

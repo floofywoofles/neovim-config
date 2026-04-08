@@ -22,10 +22,3 @@ vim.keymap.set({ "n", "i", "v", "s", "c" }, "<Right>", "<Nop>", { noremap = true
 
 vim.keymap.set("n", "H", ":bprevious<CR>", { silent = true, desc = "Previous Buffer" })
 vim.keymap.set("n", "L", ":bnext<CR>", { silent = true, desc = "Next Buffer" })
-vim.keymap.set("n", "<leader>bd", ":bdelete<CR>", { silent = true, desc = "Delete Current Buffer" })
-
--- Terminal mode mappings
-vim.keymap.set("t", "jk", [[<C-\><C-n>]], { desc = "Exit Terminal Mode" })
-vim.keymap.set("n", "<leader>at", ":enew | terminal<CR>i", { desc = "Terminal in New Buffer" })
-vim.keymap.set("n", "<leader>st", ":sp | terminal<CR>i", { desc = "Split Terminal Buffer" })
-vim.keymap.set("n", "<leader>vt", ":vsp | terminal<CR>i", { desc = "Vertical Terminal Buffer" })

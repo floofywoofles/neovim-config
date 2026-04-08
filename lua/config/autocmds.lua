@@ -1,12 +1,3 @@
-vim.api.nvim_create_autocmd("TermOpen", {
-    group = vim.api.nvim_create_augroup("TerminalUI", { clear = true }),
-    callback = function()
-        vim.opt_local.number = false
-        vim.opt_local.relativenumber = false
-        vim.cmd("startinsert")
-    end,
-})
-
 -- SHOW DOCUMENTATION ON HOVER
 vim.api.nvim_create_autocmd("CursorHold", {
     callback = function()
@@ -16,5 +7,15 @@ vim.api.nvim_create_autocmd("CursorHold", {
             end
         end
         vim.lsp.buf.hover()
+    end,
+})
+
+-- SAVE THEME ON CHANGE
+vim.api.nvim_create_autocmd("ColorScheme", {
+    callback = function()
+        local theme = vim.g.colors_name
+        if theme then
+            require("config.theme_utils").save_theme(theme)
+        end
     end,
 })
