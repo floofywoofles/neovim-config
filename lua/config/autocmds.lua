@@ -19,17 +19,3 @@ vim.api.nvim_create_autocmd("ColorScheme", {
         end
     end,
 })
-
--- OPEN SNACKS EXPLORER ON DIRECTORY
-vim.api.nvim_create_autocmd("BufEnter", {
-    callback = function()
-        local stats = vim.uv.fs_stat(vim.api.nvim_buf_get_name(0))
-        if stats and stats.type == "directory" then
-            local bufnr = vim.api.nvim_get_current_buf()
-            vim.api.nvim_buf_set_option(bufnr, "bufhidden", "wipe")
-            vim.schedule(function()
-                Snacks.explorer()
-            end)
-        end
-    end,
-})

@@ -28,3 +28,31 @@ vim.keymap.set("t", "<C-h>", "<C-\\><C-n><C-w>h", { desc = "Go to Left Window" }
 vim.keymap.set("t", "<C-j>", "<C-\\><C-n><C-w>j", { desc = "Go to Lower Window" })
 vim.keymap.set("t", "<C-k>", "<C-\\><C-n><C-w>k", { desc = "Go to Upper Window" })
 vim.keymap.set("t", "<C-l>", "<C-\\><C-n><C-w>l", { desc = "Go to Right Window" })
+
+-- Toggles
+local function toggle(option, name)
+	local val = not vim.opt[option]:get()
+	vim.opt[option] = val
+	vim.notify((val and "Enabled " or "Disabled ") .. name)
+end
+
+vim.keymap.set("n", "<leader>us", function()
+	toggle("spell", "Spelling")
+end, { desc = "Toggle Spelling" })
+vim.keymap.set("n", "<leader>uw", function()
+	toggle("wrap", "Wrap")
+end, { desc = "Toggle Wrap" })
+vim.keymap.set("n", "<leader>ur", function()
+	toggle("relativenumber", "Relative Number")
+end, { desc = "Toggle Relative Number" })
+vim.keymap.set("n", "<leader>ul", function()
+	toggle("number", "Line Number")
+end, { desc = "Toggle Line Number" })
+vim.keymap.set("n", "<leader>ud", function()
+	vim.diagnostic.enable(not vim.diagnostic.is_enabled())
+	vim.notify((vim.diagnostic.is_enabled() and "Enabled " or "Disabled ") .. "Diagnostics")
+end, { desc = "Toggle Diagnostics" })
+vim.keymap.set("n", "<leader>uh", function()
+	vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+	vim.notify((vim.lsp.inlay_hint.is_enabled() and "Enabled " or "Disabled ") .. "Inlay Hints")
+end, { desc = "Toggle Inlay Hints" })
