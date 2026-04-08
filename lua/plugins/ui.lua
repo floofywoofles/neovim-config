@@ -34,6 +34,7 @@ return {
 					},
 				},
 			},
+			explorer = { enabled = true },
 			indent = { enabled = true },
 			input = { enabled = true },
 			lazygit = { enabled = true },

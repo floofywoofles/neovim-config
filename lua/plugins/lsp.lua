@@ -33,27 +33,40 @@ return {
             local m_lsp = require("mason-lspconfig")
             local caps = require("cmp_nvim_lsp").default_capabilities()
             local format_group = vim.api.nvim_create_augroup("LspFormatting", {})
+
+            local on_attach = function(client, bufnr)
+                local b = { buffer = bufnr }
+                vim.keymap.set("n", "K", vim.lsp.buf.hover, b)
+
+                if client.supports_method("textDocument/formatting") then
+                    vim.api.nvim_clear_autocmds({ group = format_group, buffer = bufnr })
+                    vim.api.nvim_create_autocmd("BufWritePre", {
+                        group = format_group,
+                        buffer = bufnr,
+                        callback = function()
+                            vim.lsp.buf.format({ bufnr = bufnr })
+                        end,
+                    })
+                end
+            end
+
+            vim.g.rustaceanvim = {
+                server = {
+                    on_attach = on_attach,
+                    capabilities = caps,
+                },
+            }
+
             m_lsp.setup({
                 ensure_installed = { "pyright", "ts_ls", "lua_ls", "clangd", "gopls", "rust_analyzer" },
                 handlers = {
                     function(server_name)
+                        if server_name == "rust_analyzer" then
+                            return
+                        end
                         require("lspconfig")[server_name].setup({
                             capabilities = caps,
-                            on_attach = function(client, bufnr)
-                                local b = { buffer = bufnr }
-                                vim.keymap.set("n", "K", vim.lsp.buf.hover, b)
-
-                                if client.supports_method("textDocument/formatting") then
-                                    vim.api.nvim_clear_autocmds({ group = format_group, buffer = bufnr })
-                                    vim.api.nvim_create_autocmd("BufWritePre", {
-                                        group = format_group,
-                                        buffer = bufnr,
-                                        callback = function()
-                                            vim.lsp.buf.format({ bufnr = bufnr })
-                                        end,
-                                    })
-                                end
-                            end,
+                            on_attach = on_attach,
                         })
                     end,
                 },
@@ -67,6 +80,11 @@ return {
                 sources = { { name = "nvim_lsp" } },
             })
         end,
+    },
+    {
+        "mrcjkb/rustaceanvim",
+        version = "^5", -- Recommended
+        lazy = false, -- This plugin is already lazy
     },
     {
         "nvimtools/none-ls.nvim",
