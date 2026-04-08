@@ -45,6 +45,7 @@ return {
 			quickfile = { enabled = true },
 			scroll = { enabled = true },
 			statuscolumn = { enabled = true },
+			terminal = { enabled = true },
 			words = { enabled = true },
 			styles = {
 				notification = {
@@ -107,9 +108,9 @@ return {
 			{
 				"<leader>fg",
 				function()
-					Snacks.picker.git_files()
+					Snacks.picker.grep()
 				end,
-				desc = "Find Git Files",
+				desc = "Grep",
 			},
 			{
 				"<leader>fr",
@@ -350,11 +351,20 @@ return {
 				desc = "Dismiss All Notifications",
 			},
 			{
+				"<leader>ft",
+				function()
+					Snacks.terminal()
+				end,
+				desc = "Toggle Terminal",
+				mode = { "n", "t" },
+			},
+			{
 				"<c-/>",
 				function()
 					Snacks.terminal()
 				end,
 				desc = "Toggle Terminal",
+				mode = { "n", "t" },
 			},
 			{
 				"<c-_>",
@@ -362,6 +372,7 @@ return {
 					Snacks.terminal()
 				end,
 				desc = "which_key_ignore",
+				mode = { "n", "t" },
 			},
 			{
 				"]]",

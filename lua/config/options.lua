@@ -15,6 +15,10 @@ opt.smartindent = true
 opt.autoindent = true
 opt.updatetime = 500
 
+-- Disable netrw (default file explorer)
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
 -- DISABLE MOUSE COMPLETELY
 opt.mouse = ""
 

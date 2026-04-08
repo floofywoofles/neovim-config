@@ -12,6 +12,6 @@ return {
                 desc = "Yazi (Current File)",
             },
         },
-        opts = { open_for_directories = true, floating_window_scaling_factor = 0.8 },
+        opts = { open_for_directories = false, floating_window_scaling_factor = 0.8 },
     },
 }
