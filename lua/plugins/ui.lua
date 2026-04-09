@@ -2,6 +2,7 @@ return {
 	-- FZF Lua
 	{
 		"ibhagwan/fzf-lua",
+		cmd = { "FzfLua" },
 		dependencies = { "nvim-tree/nvim-web-devicons" },
 		keys = {
 			{ "<leader><space>", "<cmd>FzfLua files<cr>", desc = "Find Files" },
@@ -40,7 +41,7 @@ return {
 	-- Dashboard
 	{
 		"goolord/alpha-nvim",
-		event = "VimEnter",
+		lazy = false,
 		dependencies = { "nvim-tree/nvim-web-devicons" },
 		config = function()
 			local dashboard = require("alpha.themes.dashboard")
@@ -55,37 +56,17 @@ return {
 				"                                                     ",
 			}
 			dashboard.section.buttons.val = {
-				dashboard.button("f", "󰈞  Find File", ":FzfLua files<CR>"),
-				dashboard.button("r", "󰄉  Recent Files", ":FzfLua oldfiles<CR>"),
-				dashboard.button("e", "󰙅  Explorer", ":Neotree toggle<CR>"),
-				dashboard.button("g", "󰊢  Lazygit", ":LazyGit<CR>"),
-				dashboard.button("c", "󰒓  Config", ":e $MYVIMRC<CR>"),
-				dashboard.button("q", "󰅚  Quit", ":qa<CR>"),
+				dashboard.button("f", "󰈞  Find File", "<cmd>FzfLua files<cr>"),
+				dashboard.button("r", "󰄉  Recent Files", "<cmd>FzfLua oldfiles<cr>"),
+				dashboard.button("e", "󰙅  Explorer", "<cmd>Neotree toggle<cr>"),
+				dashboard.button("g", "󰊢  Lazygit", "<cmd>LazyGit<cr>"),
+				dashboard.button("c", "󰒓  Config", "<cmd>e $MYVIMRC<cr>"),
+				dashboard.button("q", "󰅚  Quit", "<cmd>qa<cr>"),
 			}
 			require("alpha").setup(dashboard.opts)
 		end,
 	},
 
-	-- Notifications
-	{
-		"rcarriga/nvim-notify",
-		opts = {
-			timeout = 3000,
-			stages = "static",
-		},
-		init = function()
-			vim.notify = require("notify")
-		end,
-		keys = {
-			{
-				"<leader>un",
-				function()
-					require("notify").dismiss({ silent = true, pending = true })
-				end,
-				desc = "Dismiss All Notifications",
-			},
-		},
-	},
 
 	-- Terminal
 	{
@@ -120,9 +101,12 @@ return {
 		"lewis6991/gitsigns.nvim",
 		opts = {
 			on_attach = function(bufnr)
-				local gs = package.loaded.gitsigns
+				local gs = require("gitsigns")
 
 				local function map(mode, l, r, opts)
+					if not r then
+						return
+					end
 					opts = opts or {}
 					opts.buffer = bufnr
 					vim.keymap.set(mode, l, r, opts)
@@ -151,7 +135,7 @@ return {
 
 				-- Actions
 				map("n", "<leader>gb", gs.blame_line, { desc = "Git Blame Line" })
-				map("n", "<leader>gB", gs.reveal_in_browser, { desc = "Git Browse" })
+				map("n", "<leader>gp", gs.preview_hunk, { desc = "Git Preview Hunk" })
 			end,
 		},
 	},

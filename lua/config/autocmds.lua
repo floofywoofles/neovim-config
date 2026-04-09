@@ -19,3 +19,18 @@ vim.api.nvim_create_autocmd("ColorScheme", {
         end
     end,
 })
+
+-- CLOSE BLANK BUFFER ON DIRECTORY STARTUP
+vim.api.nvim_create_autocmd("VimEnter", {
+    callback = function()
+        if vim.fn.argc() == 1 and vim.fn.isdirectory(vim.fn.argv(0)) == 1 then
+            local bufnr = vim.api.nvim_get_current_buf()
+            local buf_name = vim.api.nvim_buf_get_name(bufnr)
+            if (buf_name == "" or vim.fn.isdirectory(buf_name) == 1)
+                and vim.api.nvim_get_option_value("buftype", { buf = bufnr }) == ""
+            then
+                vim.api.nvim_buf_delete(bufnr, { force = true })
+            end
+        end
+    end,
+})

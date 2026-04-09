@@ -58,10 +58,13 @@ return {
             }
 
             m_lsp.setup({
-                ensure_installed = { "pyright", "ts_ls", "lua_ls", "clangd", "gopls", "rust_analyzer" },
+                ensure_installed = { "pyright", "vtsls", "lua_ls", "clangd", "gopls", "rust_analyzer" },
                 handlers = {
                     function(server_name)
                         if server_name == "rust_analyzer" then
+                            return
+                        end
+                        if server_name == "ts_ls" or server_name == "tsserver" then
                             return
                         end
                         require("lspconfig")[server_name].setup({
