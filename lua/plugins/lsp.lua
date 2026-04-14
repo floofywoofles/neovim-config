@@ -74,6 +74,10 @@ return {
                     end,
                 },
             })
+            require("lspconfig").gleam.setup({
+                capabilities = caps,
+                on_attach = on_attach,
+            })
             local cmp = require("cmp")
             cmp.setup({
                 mapping = cmp.mapping.preset.insert({
@@ -105,6 +109,7 @@ return {
                     null_ls.builtins.formatting.stylua,
                     null_ls.builtins.formatting.gofumpt,
                     null_ls.builtins.formatting.goimports_reviser,
+                    null_ls.builtins.formatting.gleam_format,
                 },
             })
         end,
