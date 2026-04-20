@@ -4,8 +4,7 @@ return {
         dependencies = {
             "williamboman/mason.nvim",
             "williamboman/mason-lspconfig.nvim",
-            "hrsh7th/nvim-cmp",
-            "hrsh7th/cmp-nvim-lsp",
+            "saghen/blink.cmp",
         },
         config = function()
             -- DIAGNOSTIC CONFIG
@@ -31,34 +30,43 @@ return {
 
             require("mason").setup()
             local m_lsp = require("mason-lspconfig")
-            local caps = require("cmp_nvim_lsp").default_capabilities()
+            local caps = require("blink.cmp").get_lsp_capabilities()
             local format_group = vim.api.nvim_create_augroup("LspFormatting", {})
 
-            local on_attach = function(client, bufnr)
-                local b = { buffer = bufnr }
-                vim.keymap.set("n", "K", vim.lsp.buf.hover, b)
+            vim.api.nvim_create_autocmd("LspAttach", {
+                callback = function(args)
+                    local bufnr = args.buf
+                    local client = vim.lsp.get_client_by_id(args.data.client_id)
+                    if not client then
+                        return
+                    end
 
-                if client.supports_method("textDocument/formatting") then
-                    vim.api.nvim_clear_autocmds({ group = format_group, buffer = bufnr })
-                    vim.api.nvim_create_autocmd("BufWritePre", {
-                        group = format_group,
-                        buffer = bufnr,
-                        callback = function()
-                            vim.lsp.buf.format({ bufnr = bufnr })
-                        end,
-                    })
-                end
-            end
+                    local b = { buffer = bufnr }
+                    vim.keymap.set("n", "K", vim.lsp.buf.hover, b)
+
+                    if client.supports_method("textDocument/formatting") then
+                        vim.api.nvim_clear_autocmds({ group = format_group, buffer = bufnr })
+                        vim.api.nvim_create_autocmd("BufWritePre", {
+                            group = format_group,
+                            buffer = bufnr,
+                            callback = function()
+                                vim.lsp.buf.format({ bufnr = bufnr })
+                            end,
+                        })
+                    end
+                end,
+            })
+
+            vim.lsp.config("*", {
+                capabilities = caps,
+            })
 
             vim.g.rustaceanvim = {
-                server = {
-                    on_attach = on_attach,
-                    capabilities = caps,
-                },
+                server = {},
             }
 
             m_lsp.setup({
-                ensure_installed = { "pyright", "vtsls", "lua_ls", "clangd", "gopls", "rust_analyzer" },
+                ensure_installed = { "pyright", "vtsls", "lua_ls", "clangd", "gopls", "rust_analyzer", "nim_langserver" },
                 handlers = {
                     function(server_name)
                         if server_name == "rust_analyzer" then
@@ -67,26 +75,46 @@ return {
                         if server_name == "ts_ls" or server_name == "tsserver" then
                             return
                         end
-                        require("lspconfig")[server_name].setup({
-                            capabilities = caps,
-                            on_attach = on_attach,
-                        })
+                        vim.lsp.enable(server_name)
                     end,
                 },
             })
-            require("lspconfig").gleam.setup({
-                capabilities = caps,
-                on_attach = on_attach,
-            })
-            local cmp = require("cmp")
-            cmp.setup({
-                mapping = cmp.mapping.preset.insert({
-                    ["<CR>"] = cmp.mapping.confirm({ select = true }),
-                    ["<Tab>"] = cmp.mapping.select_next_item(),
-                }),
-                sources = { { name = "nvim_lsp" } },
-            })
+            vim.lsp.enable("gleam")
         end,
+    },
+    {
+        "saghen/blink.cmp",
+        dependencies = "rafamadriz/friendly-snippets",
+        version = "*",
+        opts = {
+            keymap = {
+                preset = "super-tab",
+            },
+            appearance = {
+                use_nvim_cmp_as_default = true,
+                nerd_font_variant = "mono",
+            },
+            sources = {
+                default = { "lsp", "path", "snippets", "buffer" },
+            },
+            completion = {
+                list = {
+                    selection = {
+                        preselect = true,
+                        auto_insert = true,
+                    },
+                },
+                menu = {
+                    border = "rounded",
+                },
+                documentation = {
+                    window = {
+                        border = "rounded",
+                    },
+                },
+            },
+        },
+        opts_extend = { "sources.default" },
     },
     {
         "mrcjkb/rustaceanvim",
@@ -99,7 +127,7 @@ return {
         config = function()
             local null_ls = require("null-ls")
             require("mason-null-ls").setup({
-                ensure_installed = { "black", "prettier", "stylua", "clang-format", "gofumpt", "goimports-reviser" },
+                ensure_installed = { "black", "prettier", "stylua", "clang-format", "gofumpt", "goimports-reviser", "nimpretty" },
                 automatic_installation = true,
             })
             null_ls.setup({
@@ -110,6 +138,7 @@ return {
                     null_ls.builtins.formatting.gofumpt,
                     null_ls.builtins.formatting.goimports_reviser,
                     null_ls.builtins.formatting.gleam_format,
+                    null_ls.builtins.formatting.nimpretty,
                 },
             })
         end,

@@ -82,6 +82,18 @@ return {
 		keys = {
 			{ "<leader>ft", "<cmd>ToggleTerm<cr>", desc = "Toggle Terminal" },
 			{ "<c-/>", "<cmd>ToggleTerm<cr>", desc = "Toggle Terminal", mode = { "n", "t" } },
+			{ "<leader>st", "<cmd>ToggleTerm direction=horizontal<cr>", desc = "Terminal (Horizontal)" },
+			{
+				"<leader>rs",
+				function()
+					vim.ui.input({ prompt = "Run Shell Command: " }, function(input)
+						if input and input ~= "" then
+							vim.cmd("TermExec cmd='" .. input .. "' direction=horizontal")
+						end
+					end)
+				end,
+				desc = "Run Shell Command",
+			},
 		},
 	},
 
@@ -205,7 +217,7 @@ return {
 			require("catppuccin").setup({
 				flavour = "mocha",
 				integrations = {
-					cmp = true,
+					blink_cmp = true,
 					treesitter = true,
 					render_markdown = true,
 					native_lsp = { enabled = true, virtual_text = { errors = { "italic" }, hints = { "italic" } } },

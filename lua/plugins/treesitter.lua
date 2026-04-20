@@ -4,7 +4,7 @@ return {
         build = ":TSUpdate",
         event = { "BufReadPost", "BufNewFile" },
         opts = {
-            ensure_installed = { "lua", "python", "typescript", "c", "cpp", "markdown", "markdown_inline", "go", "rust", "gleam" },
+            ensure_installed = { "lua", "python", "typescript", "c", "cpp", "markdown", "markdown_inline", "go", "rust", "gleam", "nim" },
             highlight = { enable = true },
             indent = { enable = true },
         },

@@ -24,6 +24,7 @@ vim.keymap.set("n", "H", ":bprevious<CR>", { silent = true, desc = "Previous Buf
 vim.keymap.set("n", "L", ":bnext<CR>", { silent = true, desc = "Next Buffer" })
 
 -- Terminal window navigation
+vim.keymap.set("t", "jk", [[<C-\><C-n>]], { desc = "Exit Terminal Mode" })
 vim.keymap.set("t", "<C-h>", "<C-\\><C-n><C-w>h", { desc = "Go to Left Window" })
 vim.keymap.set("t", "<C-j>", "<C-\\><C-n><C-w>j", { desc = "Go to Lower Window" })
 vim.keymap.set("t", "<C-k>", "<C-\\><C-n><C-w>k", { desc = "Go to Upper Window" })
