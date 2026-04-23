@@ -57,3 +57,6 @@ vim.keymap.set("n", "<leader>uh", function()
 	vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
 	vim.notify((vim.lsp.inlay_hint.is_enabled() and "Enabled " or "Disabled ") .. "Inlay Hints")
 end, { desc = "Toggle Inlay Hints" })
+
+-- Run shell command
+vim.keymap.set("n", "<leader>r", ":!", { desc = "Run Shell Command" })
