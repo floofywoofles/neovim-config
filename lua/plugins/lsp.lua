@@ -31,7 +31,6 @@ return {
             require("mason").setup()
             local m_lsp = require("mason-lspconfig")
             local caps = require("blink.cmp").get_lsp_capabilities()
-            local format_group = vim.api.nvim_create_augroup("LspFormatting", {})
 
             vim.api.nvim_create_autocmd("LspAttach", {
                 callback = function(args)
@@ -43,17 +42,6 @@ return {
 
                     local b = { buffer = bufnr }
                     vim.keymap.set("n", "K", vim.lsp.buf.hover, b)
-
-                    if client.supports_method("textDocument/formatting") then
-                        vim.api.nvim_clear_autocmds({ group = format_group, buffer = bufnr })
-                        vim.api.nvim_create_autocmd("BufWritePre", {
-                            group = format_group,
-                            buffer = bufnr,
-                            callback = function()
-                                vim.lsp.buf.format({ bufnr = bufnr })
-                            end,
-                        })
-                    end
                 end,
             })
 
@@ -122,25 +110,43 @@ return {
         lazy = false, -- This plugin is already lazy
     },
     {
-        "nvimtools/none-ls.nvim",
-        dependencies = { "jay-babu/mason-null-ls.nvim" },
+        "WhoIsSethDaniel/mason-tool-installer.nvim",
+        dependencies = { "williamboman/mason.nvim" },
         config = function()
-            local null_ls = require("null-ls")
-            require("mason-null-ls").setup({
-                ensure_installed = { "black", "prettier", "stylua", "clang-format", "gofumpt", "goimports-reviser", "nimpretty" },
-                automatic_installation = true,
-            })
-            null_ls.setup({
-                sources = {
-                    null_ls.builtins.formatting.black,
-                    null_ls.builtins.formatting.prettier,
-                    null_ls.builtins.formatting.stylua,
-                    null_ls.builtins.formatting.gofumpt,
-                    null_ls.builtins.formatting.goimports_reviser,
-                    null_ls.builtins.formatting.gleam_format,
-                    null_ls.builtins.formatting.nimpretty,
+            require("mason-tool-installer").setup({
+                ensure_installed = {
+                    "black",
+                    "prettier",
+                    "stylua",
+                    "clang-format",
+                    "gofumpt",
+                    "goimports-reviser",
                 },
             })
         end,
+    },
+    {
+        "stevearc/conform.nvim",
+        event = { "BufWritePre" },
+        cmd = { "ConformInfo" },
+        opts = {
+            formatters_by_ft = {
+                lua = { "stylua" },
+                python = { "black" },
+                javascript = { "prettier" },
+                typescript = { "prettier" },
+                javascriptreact = { "prettier" },
+                typescriptreact = { "prettier" },
+                go = { "gofumpt", "goimports-reviser" },
+                c = { "clang-format" },
+                cpp = { "clang-format" },
+                gleam = { "gleam" },
+                nim = { "nimpretty" },
+            },
+            format_on_save = {
+                timeout_ms = 500,
+                lsp_fallback = true,
+            },
+        },
     },
 }
